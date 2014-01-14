@@ -71,7 +71,7 @@ app.get('/', function(req, res){
 
 app.get('/login', function(req, res){
 	res.render('login', { title: 'Login'})
-	console.log('GET request, from: '+req.connection.remoteAddress)
+	console.log('GET /login request, from: '+req.connection.remoteAddress)
 });
 
 app.post('/login', function(req, res){
