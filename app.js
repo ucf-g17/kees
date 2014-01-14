@@ -79,7 +79,7 @@ app.post('/login', function(req, res){
 
 	authenticate(username, password, function(err, user){
 		if (user) {
-			console.log('Login: '+username);
+			console.log('Login: '+username+' from: '+req.connection.remoteAddress);
 			req.session.user = username;
 			req.session.cookie.maxAge = 1800000 //30m
 			res.redirect('/home');
