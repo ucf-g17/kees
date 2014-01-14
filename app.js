@@ -71,6 +71,7 @@ app.get('/', function(req, res){
 
 app.get('/login', function(req, res){
 	res.render('login', { title: 'Login'})
+	console.log('GET request, from: '+req.connection.remoteAddress)
 });
 
 app.post('/login', function(req, res){
@@ -79,24 +80,24 @@ app.post('/login', function(req, res){
 
 	authenticate(username, password, function(err, user){
 		if (user) {
-			console.log('Login: '+username+' from: '+req.connection.remoteAddress);
+			console.log('Login: '+username+', from: '+req.connection.remoteAddress);
 			req.session.user = username;
 			req.session.cookie.maxAge = 1800000 //30m
 			res.redirect('/home');
 		} else {
-			console.log('Invalid Login Attempt: '+username);
+			console.log('Invalid Login Attempt: '+username+', from: '+req.connection.remoteAddress);
 			res.redirect('/login');
 		}
 	})
 });
 
 app.get('/home', restrict, function(req, res){
-	console.log('Directing '+req.session.user+' to /home');
+	console.log('Directing '+req.session.user+' | '+req.connection.remoteAddress+' to /home');
 	res.send('Home: <a href="/logout">logout</a>');
 });
 
 app.get('/logout', function(req, res){
-	console.log('Logout: '+req.session.user);
+	console.log('Logout: '+req.session.user+', from: '+req.connection.remoteAddress);
 	req.session.destroy(function(){
 		res.redirect('/login');
 	});
