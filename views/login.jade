@@ -1,16 +1,17 @@
 extends layout
 
 block content
-    #logo
-        img(src='/images/logo.png')
-    #display
-        #login        
-            form(method='post')
-                div
-                    label Username:
-                    input(type='text', id='user', name='user')
-                div
-                    label Password: 
-                    input(type='password', id='pass', name='pass')
-                div
-                    input(type='submit', value='Login')
+	div(data-role='page', id='login', data-theme='a')
+		form(method='post')
+			div(data-role='header', data-position='fixed')
+				h1 KEES Login
+			
+			div(data-role='content')
+				label Username:
+				input(type='text', name='user', id='user')
+				label Password:
+				input(type='password', name='pass', id='pass')
+				input(type='submit', value='Login')
+			
+			div(data-role='footer', data-position='fixed')
+				h1 © 2014
