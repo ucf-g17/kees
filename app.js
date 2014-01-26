@@ -1,5 +1,5 @@
 var express = require('express');
-var routes = require('./routes');
+//var routes = require('./routes');
 var http = require('http');
 var path = require('path');
 
@@ -20,12 +20,12 @@ app.set('view engine', 'jade');
 //app.use(express.logger('dev'));
 //app.use(express.json());
 app.use(express.urlencoded());
-//app.use(express.bodyParser());
+app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
 app.use(express.session({secret: '59B93087-78BC-4EB9-993A-A61FC844F6C9'}));
 
-app.use(require('stylus').middleware(path.join(__dirname, 'public')));
+//app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(app.router);
@@ -35,31 +35,38 @@ app.use(app.router);
 //  app.use(express.errorHandler());
 //}
 
-app.get('/', routes.index);
+app.get('/', function(req, res) {
+    console.log('GET / request, from: '+req.connection.remoteAddress); 
 
-//app.get('/login', routes.login);
+    if (req.session.user) {
+        res.redirect('/home');
+    }
+    else {
+        res.redirect('/login');
+    }
+});
 
-// app.get('/login', function(req, res){
-//         res.render('login', {title: 'Login'});
-//         console.log('GET /login request, from: '+req.connection.remoteAddress);
-// });
+app.get('/login', function(req, res){
+        res.render('login', {title: 'KEES Login'});
+        console.log('GET /login request, from: '+req.connection.remoteAddress);
+});
 
-app.post('/', function(req, res){
-        var username = req.body.user
-        var password = req.body.pass
+app.post('/login', function(req, res){
+        var username = req.body.user;
+        var password = req.body.pass;
 
         //authenticate(username, password, function(err, user){
         //        if (user) {
-        		  if (username=="admin" && password=="g17kees") {
-                        console.log('Login: '+username+', from: '+req.connection.remoteAddress);
-                        req.session.user = username;
-                        req.session.cookie.maxAge = 1800000 //30m
-                        res.redirect('/home');
-                        console.log('Directing '+req.session.user+' | '+req.connection.remoteAddress+' to /home');
-                } else {
-                        console.log('Invalid Login Attempt: '+username+', from: '+req.connection.remoteAddress);
-                        res.redirect('/');
-                }
+        if (username=="admin" && password=="g17kees") {
+            console.log('Login: '+username+', from: '+req.connection.remoteAddress);
+            req.session.user = username;
+            req.session.cookie.maxAge = 1800000; //30m
+            res.redirect('/home');
+            console.log('Directing '+req.session.user+' | '+req.connection.remoteAddress+' to /main');
+        } else {
+            console.log('Invalid Login Attempt: '+username+', from: '+req.connection.remoteAddress);
+            res.redirect('/login');
+        }
         //})
 });
 
@@ -69,16 +76,21 @@ app.post('/', function(req, res){
 // });
 
 app.get('/home', function(req, res){
-	    res.render('home', {title: 'Home'});
+	    res.render('home', {title: 'KEES Home'});
 	    console.log('GET /home request, from: '+req.connection.remoteAddress);
+});
+
+app.get('/admin', function(req, res){
+        res.render('admin', {title: 'KEES Admin'});
+        console.log('GET /admin request, from: '+req.connection.remoteAddress);
 });
 
 app.get('/logout', function(req, res){
 	    console.log('Logout: '+req.session.user+', from: '+req.connection.remoteAddress);
-	    //req.session.user = null;
+	    req.session.user = null;
 	    //req.session.cookie = null;
 	    //res.render('login', {title: 'Login'});
-	    res.redirect('/');
+        res.redirect('/');
 });
 
 

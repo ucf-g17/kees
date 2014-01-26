@@ -1,12 +1,13 @@
 doctype html
-html
+html(lang="en")
 	head
 		title= title
 		meta(charset='utf-8')
-		meta(name='viewport',content='width=device-width, initial-scale=1')
-		link(rel='stylesheet', href='/stylesheets/jquery.mobile-1.4.0.min.css')
-		link(rel='stylesheet', href='/stylesheets/jquery.mobile.theme-1.4.0.min.css')
-		script(src='/javascripts/jquery-2.0.3.min.js')
-		script(src='/javascripts/jquery.mobile-1.4.0.min.js')
+		meta(http-equiv='X-UA-Compatible', content='IE=edge')
+		meta(name='viewport', content='width=device-width, initial-scale=1.0')
+		link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+		script(src='/javascripts/jquery-2.1.0.js')
+		script(src='/javascripts/bootstrap.js')
 	body
 		block content
+		block scripts
