@@ -1,0 +1,21 @@
+extends layout
+
+nav.navbar.navbar-default(role='navigation')
+	.navbar-header
+		button.navbar-toggle(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1')
+			span.sr-only Toggle navigation
+			span.icon-bar
+			span.icon-bar
+			span.icon-bar
+		a.navbar-brand(href='/') KEES
+
+	#bs-example-navbar-collapse-1.collapse.navbar-collapse
+		ul.nav.navbar-nav
+			li.active
+				a(href='/') Home
+			li
+				a(href='/admin') Admin
+
+		ul.nav.navbar-nav.navbar-right
+			li
+				a(href='/logout') Logout

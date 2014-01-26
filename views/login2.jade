@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    #logo
+        img(src='/images/logo.png')
+    #display
+        #login        
+            form(method='post')
+                div
+                    label Username:
+                    input(type='text', id='user', name='user')
+                div
+                    label Password: 
+                    input(type='password', id='pass', name='pass')
+                div
+                    input(type='submit', value='Login')
