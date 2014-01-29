@@ -1,4 +1,13 @@
+body {
+  background-color: #eee;
+}
 .jumbotron {
 	text-align: center;
 	padding-top: 60px;
+}
+#btngroup{
+	width: 90px;
+}
+#lstatus {
+	padding-left: 10px;
 }

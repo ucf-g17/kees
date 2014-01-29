@@ -30,16 +30,64 @@ html(lang="en")
 				a.button.btn.btn-default.navbar-btn.navbar-right(type='button', href='/logout') Logout
 
 		.jumbotron
-			button.btn.btn-default(type='button')
-				span.glyphicon.glyphicon-lock Status
+			.div
+				button.btn.btn-default(id='lbutton')
+					span.glyphicon.glyphicon-lock 
+				label(id='lstatus') 
+					h4 Status: Locked
 
 			.thumbnail
-				img(src='/images/320x240.gif')
-			.caption
-				h4 Kees Live Stream
+				img(src='/images/320x240.jpg')
+				.caption
+					h4 Live Stream
 
-			button.btn.btn-default(type='button')
-				span.glyphicon.glyphicon-user Add Guest 
+			.btn-group
+				button.btn.btn-default(id='btngroup', data-toggle='modal', data-target='#add')
+					span.glyphicon.glyphicon-user 
+						h5 Add Guest 
+				button.btn.btn-default(id='btngroup' data-toggle='modal', data-target='#hist')
+					span.glyphicon.glyphicon-calendar
+						h5 History
 
-			button.btn.btn-default(type='button')
-				span.glyphicon.glyphicon-camera Save Image
+			.btn-group
+				button.btn.btn-default(id='btngroup')
+					span.glyphicon.glyphicon-camera 
+						h5 Snapshot
+				button.btn.btn-default(id='btngroup')
+					span.glyphicon.glyphicon-facetime-video
+						h5 Record
+
+		.modal.fade(id='add')
+			.modal-dialog
+				.modal-content
+					.modal-header
+						// button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+						h4.modal-title Add Guest
+					.modal-body
+						form
+							.thumbnail
+								img(src='/images/320x240.jpg')
+							input.form-control(type='text', placeholder='Name', require='required', autofocus='autofocus')
+					.modal-footer
+						button.btn.btn-default(data-dismiss='modal') Cancel
+						button.btn.btn-primary(data-dismiss='modal') Save
+
+		.modal.fade(id='hist')
+			.modal-dialog
+				.modal-content
+					.modal-header
+						// button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+						h4.modal-title History
+					.modal-body
+						.list-group
+								.list-group-item
+									h5 1/25/2014 3:31:33 PM - Package Left
+								.list-group-item 
+									h5 1/14/2014 6:00:30 PM - Unlocked, Owner via App
+								.list-group-item 
+									h5 1/10/2014 12:28:10 PM - Unlocked, Guest: Tony via Face
+								.list-group-item 
+									h5 1/10/2014 2:14:34 AM - Unlocked, Owner via RFID
+								
+					.modal-footer
+						button.btn.btn-primary(data-dismiss='modal') Close
