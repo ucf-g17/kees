@@ -4,6 +4,7 @@ body {
 .jumbotron {
 	text-align: center;
 	padding-top: 60px;
+	position: center;
 }
 #btngroup{
 	width: 90px;
@@ -12,6 +13,7 @@ body {
 #lstatus {
 	padding-left: 10px;
 }
-#stream {
-	border: 2px solid #000;
+.thumbnail {
+	background-color: #eee;
+	border-color: #eee;
 }
