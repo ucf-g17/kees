@@ -4,3 +4,9 @@ body {
 .jumbotron {
 	padding-top: 60px;
 }
+.btn-group-vertical {
+	max-width: 250px;
+}
+.list-group {
+	max-width: 250px;
+}
