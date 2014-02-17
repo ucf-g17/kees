@@ -31,13 +31,13 @@ html(lang="en")
 
 		.jumbotron
 			.div
-				button.btn.btn-default(id='lbutton')
+				button.btn.btn-default(id='lbutton', type='button', onclick='location.href="/unlock";')
 					span.glyphicon.glyphicon-lock 
 				label(id='lstatus') 
 					h4 Status: Locked
 
 			.thumbnail
-				img(src='/images/320x240.jpg', id='stream')
+				img(src='http://kees-ucf.no-ip.info:8081/?action=stream', id='stream')
 				.caption
 					h4 Live Stream
 

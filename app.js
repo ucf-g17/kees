@@ -3,11 +3,14 @@ var express = require('express');
 var http = require('http');
 var path = require('path');
 
-var mongo = require('mongodb');
-var monk = require('monk');
-var db = monk('localhost:27017/kees');
+//var mongo = require('mongodb');
+//var monk = require('monk');
+//var db = monk('localhost:27017/kees');
 
 var app = express();
+
+var sys = require('sys');
+var exec = require('child_process').exec, child;
 
 app.locals.appname = 'KEES';
 
@@ -93,6 +96,33 @@ app.get('/logout', function(req, res){
         res.redirect('/');
 });
 
+app.get('/unlock', function(req, res){
+        console.log('GET /unlock request, from: '+req.connection.remoteAddress);
+
+        child = exec('python /home/pi/command.py 0', function (error, stdout, stderr) {
+            console.log('stdout: ' + stdout);
+            console.log('stderr: ' + stderr);
+            //if (error !== null) {
+            //  console.log('exec error: ' + error);
+            //}
+        });
+
+        res.redirect('/home');
+});
+
+app.get('/master', function(req, res){
+        console.log('GET /master request, from: '+req.connection.remoteAddress);
+
+        child = exec('python /home/pi/command.py 1', function (error, stdout, stderr) {
+            console.log('stdout: ' + stdout);
+            console.log('stderr: ' + stderr);
+            //if (error !== null) {
+            //  console.log('exec error: ' + error);
+            //}
+        });
+
+        res.redirect('/admin');
+});
 
 app.all('*', function(req, res){
   res.send(404);
