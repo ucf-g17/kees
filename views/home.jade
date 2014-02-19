@@ -8,8 +8,22 @@ html(lang="en")
 		link(rel='stylesheet', href='/stylesheets/bootstrap.css')
 		link(rel='stylesheet', href='/stylesheets/navbar-fixed-top.css')
 		link(rel='stylesheet', href='/stylesheets/home.css')
-		script(src='/javascripts/jquery-2.1.0.js')
+		script(src='/javascripts/jquery-2.1.0.min.js')
 		script(src='/javascripts/bootstrap.js')
+		script.
+			//$(document).ready(function(){
+			$(document).on('click', '#lbutton', function(){
+			$.get('/unlock')
+			$("#lbutton").removeClass("btn btn-success").addClass("btn btn-danger");
+			$("#lstatus").text("Unlocked");
+			setTimeout(function (){
+			$("#lbutton").removeClass("btn btn-danger").addClass("btn btn-success");
+			$("#lstatus").text("Locked");
+			}, 5000);
+			return false;
+			});
+			//});
+
 	body
 		nav.navbar.navbar-default.navbar-fixed-top(role='navigation')
 			.navbar-header
@@ -31,13 +45,12 @@ html(lang="en")
 
 		.jumbotron
 			.div
-				button.btn.btn-default(id='lbutton', type='button', onclick='location.href="/unlock";')
+				button.btn.btn-success(id='lbutton', type='button')
 					span.glyphicon.glyphicon-lock 
-				label(id='lstatus') 
-					h4 Status: Locked
+				label(id='lstatus') Locked
 
 			.thumbnail
-				img(src='http://kees-ucf.no-ip.info:8081/?action=stream', id='stream')
+				img(src='/images/320x240.jpg', id='stream')
 				.caption
 					h4 Live Stream
 

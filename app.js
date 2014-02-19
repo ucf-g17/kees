@@ -107,7 +107,7 @@ app.get('/unlock', function(req, res){
             //}
         });
 
-        res.redirect('/home');
+        //res.redirect('/home');
 });
 
 app.get('/master', function(req, res){
