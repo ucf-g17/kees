@@ -5,24 +5,38 @@ html(lang="en")
 		meta(charset='utf-8')
 		meta(http-equiv='X-UA-Compatible', content='IE=edge')
 		meta(name='viewport', content='width=device-width, initial-scale=1.0')
+		link(rel='shortcut icon', type='image/x-icon', href='/images/favicon.ico')
 		link(rel='stylesheet', href='/stylesheets/bootstrap.css')
 		link(rel='stylesheet', href='/stylesheets/navbar-fixed-top.css')
 		link(rel='stylesheet', href='/stylesheets/home.css')
 		script(src='/javascripts/jquery-2.1.0.min.js')
 		script(src='/javascripts/bootstrap.js')
 		script.
-			//$(document).ready(function(){
+			$(document).ready(function(){
 			$(document).on('click', '#lbutton', function(){
-			$.get('/unlock')
 			$("#lbutton").removeClass("btn btn-success").addClass("btn btn-danger");
 			$("#lstatus").text("Unlocked");
+			$.get('/unlock')
 			setTimeout(function (){
 			$("#lbutton").removeClass("btn btn-danger").addClass("btn btn-success");
 			$("#lstatus").text("Locked");
 			}, 5000);
-			return false;
 			});
-			//});
+			});
+		script.
+			$(document).ready(function(){
+			$(document).on('click', '#gsave', function(){
+			var name = $('#name').val();
+			$.get('/addguest', { name:name });
+			$('#name').val("");
+			});
+			});	
+		script.
+			$(document).ready(function(){
+			$(document).on('click', '#gcancel', function(){
+			$('#name').val("");
+			})
+			})	
 
 	body
 		nav.navbar.navbar-default.navbar-fixed-top(role='navigation')
@@ -80,10 +94,10 @@ html(lang="en")
 						form
 							.thumbnail
 								img(src='/images/320x240.jpg')
-							input.form-control(type='text', placeholder='Name', require='required', autofocus='autofocus')
+							input.form-control(type='text' id='name' placeholder='Name' require='required' autofocus='autofocus')
 					.modal-footer
-						button.btn.btn-default(data-dismiss='modal') Cancel
-						button.btn.btn-primary(data-dismiss='modal') Save
+						button.btn.btn-default(data-dismiss='modal' id='gcancel') Cancel
+						button.btn.btn-primary(data-dismiss='modal' id='gsave') Save
 
 		.modal.fade(id='hist')
 			.modal-dialog

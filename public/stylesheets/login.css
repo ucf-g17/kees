@@ -33,7 +33,11 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
-.form-signin .form-signin-heading,
-.form-signin .checkbox {
+.form-signin .form-signin-heading {
   margin-bottom: 10px;
+  text-align: center;
+}
+.btn-lg.btn-primary {
+  width: 100%;
+  border-radius: 0px;
 }

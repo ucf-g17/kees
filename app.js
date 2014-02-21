@@ -19,7 +19,7 @@ app.set('port', process.env.PORT || 8080);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-//app.use(express.favicon());
+app.use(express.favicon());
 //app.use(express.logger('dev'));
 //app.use(express.json());
 app.use(express.urlencoded());
@@ -38,92 +38,60 @@ app.use(app.router);
 //  app.use(express.errorHandler());
 //}
 
+
+
 app.get('/', function(req, res) {
-    console.log('GET / request, from: '+req.connection.remoteAddress); 
-
-    if (req.session.user) {
-        res.redirect('/home');
-    }
-    else {
-        res.redirect('/login');
-    }
+        console.log('GET / | '+req.connection.remoteAddress); 
+        req.session.user ? res.redirect('/home') : res.redirect('/login');
 });
-
 app.get('/login', function(req, res){
-        res.render('login', {title: 'KEES Login'});
-        console.log('GET /login request, from: '+req.connection.remoteAddress);
+        console.log('GET /login | '+req.connection.remoteAddress);
+        res.render('login', { title:'KEES Login'} );
 });
-
 app.post('/login', function(req, res){
+        //console.log('POST /login | '+req.conecction.remoteAddress);
         var username = req.body.user;
         var password = req.body.pass;
 
-        //authenticate(username, password, function(err, user){
-        //        if (user) {
         if (username=="admin" && password=="g17kees") {
-            console.log('Login: '+username+', from: '+req.connection.remoteAddress);
             req.session.user = username;
             req.session.cookie.maxAge = 1800000; //30m
             res.redirect('/home');
-            console.log('Directing '+req.session.user+' | '+req.connection.remoteAddress+' to /main');
+            console.log('redirect /home | '+req.session.user+' | '+req.connection.remoteAddress);
+            console.log('valid login');
         } else {
-            console.log('Invalid Login Attempt: '+username+', from: '+req.connection.remoteAddress);
+            console.log('redirect /login | '+req.connection.remoteAddress);
+            console.log('invalid login');
             res.redirect('/login');
         }
-        //})
 });
-
-// app.get('/home', restrict, function(req, res){
-// 	    res.render('home', {title: 'Home'});
-// 	    console.log('GET /home request, from: '+req.connection.remoteAddress);
-// });
-
 app.get('/home', function(req, res){
-	    res.render('home', {title: 'KEES Home'});
-	    console.log('GET /home request, from: '+req.connection.remoteAddress);
+        console.log('GET /home | '+req.connection.remoteAddress);
+	    res.render('home', { title:'KEES Home'} );
 });
-
 app.get('/admin', function(req, res){
-        res.render('admin', {title: 'KEES Admin'});
-        console.log('GET /admin request, from: '+req.connection.remoteAddress);
+        console.log('GET /admin | '+req.connection.remoteAddress);
+        res.render('admin', { title:'KEES Admin'} ); 
 });
-
 app.get('/logout', function(req, res){
-	    console.log('Logout: '+req.session.user+', from: '+req.connection.remoteAddress);
+	    console.log('GET /logout | '+req.session.user+' '+req.connection.remoteAddress);
 	    req.session.user = null;
-	    //req.session.cookie = null;
-	    //res.render('login', {title: 'Login'});
         res.redirect('/');
 });
-
 app.get('/unlock', function(req, res){
-        console.log('GET /unlock request, from: '+req.connection.remoteAddress);
-
-        child = exec('python /home/pi/command.py 0', function (error, stdout, stderr) {
-            console.log('stdout: ' + stdout);
-            console.log('stderr: ' + stderr);
-            //if (error !== null) {
-            //  console.log('exec error: ' + error);
-            //}
-        });
-
-        //res.redirect('/home');
+        console.log('GET /unlock | '+req.connection.remoteAddress);
+        child = exec('python /home/pi/command.py 0');
 });
-
 app.get('/master', function(req, res){
-        console.log('GET /master request, from: '+req.connection.remoteAddress);
-
-        child = exec('python /home/pi/command.py 1', function (error, stdout, stderr) {
-            console.log('stdout: ' + stdout);
-            console.log('stderr: ' + stderr);
-            //if (error !== null) {
-            //  console.log('exec error: ' + error);
-            //}
-        });
-
-        res.redirect('/admin');
+        console.log('GET /master | '+req.connection.remoteAddress);
+        var mode = req.param('mode');
+        child = exec('python /home/pi/command.py 1');
 });
-
+app.get('/addguest', function(req, res){
+        console.log('GET /addguest | '+req.connection.remoteAddress);
+        var name = req.param('name');
+        child = exec('/home/pi/addguest '+name);
+});
 app.all('*', function(req, res){
   res.send(404);
 })
