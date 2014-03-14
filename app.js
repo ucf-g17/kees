@@ -81,20 +81,52 @@ app.get('/logout', function(req, res){
 app.get('/unlock', function(req, res){
         console.log('GET /unlock | '+req.connection.remoteAddress);
         child = exec('python /home/pi/command.py 0');
+        res.redirect('/home');
 });
 app.get('/master', function(req, res){
         console.log('GET /master | '+req.connection.remoteAddress);
-        var mode = req.param('mode');
         child = exec('python /home/pi/command.py 1');
+        res.redirect('/admin');
 });
 app.get('/addguest', function(req, res){
         console.log('GET /addguest | '+req.connection.remoteAddress);
         var name = req.param('name');
         child = exec('/home/pi/addguest '+name);
 });
+
+app.get('/history', function(req, res){
+    var fs = require('fs');
+
+    fs.readFile('/home/pi/data/hist_master.txt', function(err, data) {
+        if(err) throw err;
+        var ls = data.toString().split("\n");
+        var cn = [];
+
+        if(ls.length > 10) {
+            for(i=0; i<10; i++) {
+                //console.log(ls[i]);
+                cn[i] = ls[i];
+            }
+        }
+        else {
+             for(i in ls) {
+                //console.log(ls[i]);
+                cn[i] = ls[i];
+            }           
+        }
+
+        for(i in cn) {
+            console.log(cn[i]);
+        }
+
+        res.write(JSON.stringify(cn));
+        res.end();
+    });
+});
+
 app.all('*', function(req, res){
   res.send(404);
-})
+});
 
 http.createServer(app).listen(app.get('port'), function(){
 		console.log('Express server listening on port ' + app.get('port'));

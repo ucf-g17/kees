@@ -13,30 +13,42 @@ html(lang="en")
 		script(src='/javascripts/bootstrap.js')
 		script.
 			$(document).ready(function(){
-			$(document).on('click', '#lbutton', function(){
-			$("#lbutton").removeClass("btn btn-success").addClass("btn btn-danger");
-			$("#lstatus").text("Unlocked");
-			$.get('/unlock')
-			setTimeout(function (){
-			$("#lbutton").removeClass("btn btn-danger").addClass("btn btn-success");
-			$("#lstatus").text("Locked");
-			}, 5000);
-			});
+				$(document).on('click', '#lbutton', function(){
+					$("#lbutton").removeClass("btn btn-success").addClass("btn btn-danger");
+					$("#lstatus").text("Unlocked");
+					$.get('/unlock');
+					setTimeout(function (){
+						$("#lbutton").removeClass("btn btn-danger").addClass("btn btn-success");
+						$("#lstatus").text("Locked");
+					}, 5000);
+				});
 			});
 		script.
 			$(document).ready(function(){
-			$(document).on('click', '#gsave', function(){
-			var name = $('#name').val();
-			$.get('/addguest', { name:name });
-			$('#name').val("");
-			});
+				$(document).on('click', '#gsave', function(){
+					var name = $('#name').val();
+					$.get('/addguest', { name: name });
+					$('#name').val("");
+				});
 			});	
 		script.
 			$(document).ready(function(){
-			$(document).on('click', '#gcancel', function(){
-			$('#name').val("");
-			})
-			})	
+				$(document).on('click', '#gcancel', function(){
+					$('#name').val("");
+				});
+			});	
+		script.
+			$(document).ready(function(){
+				$(document).on('click', '#histbtn', function(){
+					$.getJSON('/history', function(data){
+						//alert("Data: "+data);
+						$('#histls').empty();
+						$.each(data, function(index, val){
+							$('#histls').append('<li class="list-group-item">'+val+'</li>');
+						});
+					});
+				});
+			});
 
 	body
 		nav.navbar.navbar-default.navbar-fixed-top(role='navigation')
@@ -69,10 +81,10 @@ html(lang="en")
 					h4 Live Stream
 
 			.btn-group
-				button.btn.btn-default(id='btngroup', data-toggle='modal', data-target='#add')
+				button.btn.btn-default(id='addguestbtn', data-toggle='modal', data-target='#add')
 					span.glyphicon.glyphicon-user 
 						h5 Add Guest 
-				button.btn.btn-default(id='btngroup' data-toggle='modal', data-target='#hist')
+				button.btn.btn-default(id='histbtn' data-toggle='modal', data-target='#hist')
 					span.glyphicon.glyphicon-calendar
 						h5 History
 
@@ -85,7 +97,7 @@ html(lang="en")
 						h5 Record
 
 		.modal.fade(id='add')
-			.modal-dialog
+			.modal-dialog.modal-sm
 				.modal-content
 					.modal-header
 						// button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
@@ -100,21 +112,13 @@ html(lang="en")
 						button.btn.btn-primary(data-dismiss='modal' id='gsave') Save
 
 		.modal.fade(id='hist')
-			.modal-dialog
+			.modal-dialog.modal-sm
 				.modal-content
 					.modal-header
 						// button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
 						h4.modal-title History
-					.modal-body
-						.list-group
-								.list-group-item
-									h5 1/25/2014 3:31:33 PM - Package Left
-								.list-group-item 
-									h5 1/14/2014 6:00:30 PM - Unlocked, Owner via App
-								.list-group-item 
-									h5 1/10/2014 12:28:10 PM - Unlocked, Guest: Tony via Knock
-								.list-group-item 
-									h5 1/10/2014 2:14:34 AM - Unlocked, Owner via RFID
+					.modal-body(id='histb')
+						.list-group(id='histls')
 								
 					.modal-footer
 						button.btn.btn-primary(data-dismiss='modal') Close

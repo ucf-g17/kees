@@ -6,15 +6,27 @@ body {
 	padding-top: 60px;
 	position: center;
 }
+.thumbnail {
+	background-color: #eee;
+	border-color: #eee;
+}
+#histb{
+	max-height: 250px;
+	overflow: auto;
+}
 #btngroup{
+	width: 90px;
+	padding-top: 10px;
+}
+#addguestbtn{
+	width: 90px;
+	padding-top: 10px;
+}
+#histbtn{
 	width: 90px;
 	padding-top: 10px;
 }
 #lstatus {
 	font-size: 18px;
 	padding-left: 10px;
-}
-.thumbnail {
-	background-color: #eee;
-	border-color: #eee;
 }
