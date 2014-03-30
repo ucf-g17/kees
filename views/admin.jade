@@ -13,17 +13,29 @@ html(lang="en")
 		script(src='/javascripts/bootstrap.js')
 		script.
 			$(document).ready(function(){
-			$(document).on('click', '#master', function(){
-			if ($('#master').text() == "Enable Master") {
-				$('#master').text("Disable Master");
-				$.get('/master', { mode:'disable' });
-			}
-			else {
-				$('#master').text("Enable Master");
-				$.get('/master', { mode:'enable' });
-			}
+				$(document).on('click', '#master', function(){
+					$.get('/master');
+				});
 			});
+		script.
+			$(document).ready(function(){
+				$.getJSON('/guests', function(data){
+					$('#guestls').empty();
+					$.each(data, function(index, val){
+						if (val != null && val != ' ' && val != '')
+							$('#guestls').append('<li class="list-group-item">'+val+'</li>');
+					});
+				});
 			});
+		script.
+			$(document).ready(function(){
+				$(document).on('click', '#removebtn', function(){
+					var name = $('#remove').val();
+					$.get('/removeguest', { name: name });
+					location.reload(true);
+				});
+			});
+
 	body
 		nav.navbar.navbar-default.navbar-fixed-top(role='navigation')
 			.navbar-header
@@ -47,15 +59,10 @@ html(lang="en")
 			.panel-title
 				h2 Manage
 				.btn-group-vertical
-					button.btn.btn-default(type='button' id='master')
-						h5 Enable Master
-
+					button.btn.btn-default(type='button' id='master') Enable Master
+					button.btn.btn-default(type='button' id='removebtn') Remove Guest
+					input(type='text', placeholder='Guest', id='remove')
+				
 			.panel-title
 				h2 Guests
-				.list-group
-					.list-group-item
-						h5 Abby
-					.list-group-item 
-						h5 Joe
-					.list-group-item 
-						h5 Tony
+				.list-group(id='guestls')

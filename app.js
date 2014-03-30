@@ -80,20 +80,56 @@ app.get('/logout', function(req, res){
 });
 app.get('/unlock', function(req, res){
         console.log('GET /unlock | '+req.connection.remoteAddress);
-        child = exec('python /home/pi/command.py 0');
+        child = exec('python /home/pi/command.py 2');
         res.redirect('/home');
 });
 app.get('/master', function(req, res){
         console.log('GET /master | '+req.connection.remoteAddress);
-        child = exec('python /home/pi/command.py 1');
+        child = exec('python /home/pi/command.py 4');
         res.redirect('/admin');
 });
 app.get('/addguest', function(req, res){
         console.log('GET /addguest | '+req.connection.remoteAddress);
         var name = req.param('name');
-        child = exec('/home/pi/addguest '+name);
+        child = exec('/home/pi/RaspicamC++/raspicam-0.0.6/JoshProjects/AddGuest/build/addGuest '+name);
+        var fs = require('fs');
+        fs.appendFile('/home/pi/data/guests.txt', name+'\n', function(err) {
+            if(err) throw err;
+        });
+        res.redirect('/home');
 });
 
+//remove guest from guests.txt file
+app.get('/removeguest', function(req, res){
+        console.log('GET /removeguest | '+req.connection.remoteAddress);
+
+        var name = req.param('name');
+        var fs = require('fs');
+        fs.readFile('/home/pi/data/guests.txt', function(err, data){
+            if(err) throw err;
+            var ls = data.toString().split("\n");
+            var cn = [];
+
+            var wstream = fs.createWriteStream('/home/pi/data/guests.txt');
+
+            for (i=0; i<ls.length-1; i++)
+                cn[i] = ls[i];
+
+            for (i in cn) {
+                if (cn[i] == name)
+                    wstream.write(' \n');
+                else
+                    wstream.write(cn[i]+'\n');
+            }
+
+            wstream.end();
+
+            res.write(JSON.stringify(cn));
+            res.end();
+        });
+});
+
+//send list of history to client
 app.get('/history', function(req, res){
     var fs = require('fs');
 
@@ -109,7 +145,7 @@ app.get('/history', function(req, res){
             }
         }
         else {
-             for(i in ls) {
+            for(i in ls) {
                 //console.log(ls[i]);
                 cn[i] = ls[i];
             }           
@@ -118,6 +154,24 @@ app.get('/history', function(req, res){
         for(i in cn) {
             console.log(cn[i]);
         }
+
+        res.write(JSON.stringify(cn));
+        res.end();
+    });
+});
+
+//send list of guests to client
+app.get('/guests', function(req, res){
+    console.log('GET /guests | '+req.connection.remoteAddress);
+
+    var fs = require('fs');
+    fs.readFile('/home/pi/data/guests.txt', function(err, data) {
+        if(err) throw err;
+        var ls = data.toString().split('\n');
+        var cn = [];
+
+        for(i=0; i<ls.length-1; i++)
+            cn[i] = ls[i];
 
         res.write(JSON.stringify(cn));
         res.end();

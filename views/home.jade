@@ -20,7 +20,7 @@ html(lang="en")
 					setTimeout(function (){
 						$("#lbutton").removeClass("btn btn-danger").addClass("btn btn-success");
 						$("#lstatus").text("Locked");
-					}, 5000);
+					}, 3000);
 				});
 			});
 		script.
@@ -31,6 +31,12 @@ html(lang="en")
 					$('#name').val("");
 				});
 			});	
+		script.
+			$(document).ready(function(){
+				$(document).on('click', '#addguestbtn', function(){
+					$('#gimg').attr("src", "/images/pic2.jpg");
+				});
+			});
 		script.
 			$(document).ready(function(){
 				$(document).on('click', '#gcancel', function(){
@@ -76,7 +82,7 @@ html(lang="en")
 				label(id='lstatus') Locked
 
 			.thumbnail
-				img(src='/images/320x240.jpg', id='stream')
+				img(src='http://192.168.0.27:8081/?action=stream', id='stream')
 				.caption
 					h4 Live Stream
 
@@ -88,14 +94,6 @@ html(lang="en")
 					span.glyphicon.glyphicon-calendar
 						h5 History
 
-			.btn-group
-				button.btn.btn-default(id='btngroup')
-					span.glyphicon.glyphicon-camera 
-						h5 Snapshot
-				button.btn.btn-default(id='btngroup')
-					span.glyphicon.glyphicon-facetime-video
-						h5 Record
-
 		.modal.fade(id='add')
 			.modal-dialog.modal-sm
 				.modal-content
@@ -105,7 +103,7 @@ html(lang="en")
 					.modal-body
 						form
 							.thumbnail
-								img(src='/images/320x240.jpg')
+								img(src='', id='gimg')
 							input.form-control(type='text' id='name' placeholder='Name' require='required' autofocus='autofocus')
 					.modal-footer
 						button.btn.btn-default(data-dismiss='modal' id='gcancel') Cancel
