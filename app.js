@@ -138,8 +138,8 @@ app.get('/history', function(req, res){
         var ls = data.toString().split("\n");
         var cn = [];
 
-        if(ls.length > 10) {
-            for(i=0; i<10; i++) {
+        if(ls.length > 25) {
+            for(i=0; i<25; i++) {
                 //console.log(ls[i]);
                 cn[i] = ls[i];
             }
