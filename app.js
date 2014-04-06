@@ -47,7 +47,6 @@ app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.json());
 app.use(express.urlencoded());
-app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
 app.use(express.session({secret: '59B93087-78BC-4EB9-993A-A61FC844F6C9'}));

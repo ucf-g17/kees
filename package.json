@@ -1,6 +1,6 @@
 {
   "name": "kees",
-  "version": "0.0.1",
+  "version": "1.0",
   "private": true,
   "scripts": {
     "start": "node app.js"
@@ -8,8 +8,5 @@
   "dependencies": {
     "express": "3.4.7",
     "jade": "*",
-    "stylus": "*",
-    "mongodb": "*",
-    "monk": "*"
   }
 }
