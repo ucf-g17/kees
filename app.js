@@ -3,11 +3,42 @@ var express = require('express');
 var http = require('http');
 var path = require('path');
 
+var hash = require('./pass').hash;
+
 //var mongo = require('mongodb');
 //var monk = require('monk');
 //var db = monk('localhost:27017/kees');
 
 var app = express();
+
+var users = { admin: {name: 'admin'} };
+
+hash('g17kees', function(err, salt, hash){
+  if (err) throw err;
+  users.admin.salt = salt;
+  users.admin.hash = hash;
+});
+
+function authenticate(name, pass, fn){
+    var user = users[name];
+
+    if (!user) return fn(new Error('user not found'));
+
+    hash(pass, user.salt, function(err, hash){
+        if (err) return fn(err);
+        if (hash == user.hash) return fn(null, user);
+        fn(new Error('invalid password'));
+    })
+}
+
+function restrict(req, res, next){
+    if (req.session.user) {
+        next();
+    } else {
+        req.session.error = "Access denied!";
+        res.redirect('/login');
+    }
+}
 
 var sys = require('sys');
 var exec = require('child_process').exec, child;
@@ -53,42 +84,60 @@ app.post('/login', function(req, res){
         var username = req.body.user;
         var password = req.body.pass;
 
-        if (username=="admin" && password=="g17kees") {
-            req.session.user = username;
-            req.session.cookie.maxAge = 1800000; //30m
-            res.redirect('/home');
-            console.log('redirect /home | '+req.session.user+' | '+req.connection.remoteAddress);
-            console.log('valid login');
-        } else {
-            console.log('redirect /login | '+req.connection.remoteAddress);
-            console.log('invalid login');
-            res.redirect('/login');
-        }
+        // if (username=="admin" && password=="g17kees") {
+        //     req.session.user = username;
+        //     req.session.cookie.maxAge = 1800000; //30m
+        //     res.redirect('/home');
+        //     console.log('redirect /home | '+req.session.user+' | '+req.connection.remoteAddress);
+        //     console.log('valid login');
+        // } else {
+        //     console.log('redirect /login | '+req.connection.remoteAddress);
+        //     console.log('invalid login');
+        //     res.redirect('/login');
+        // }
+
+        authenticate(username, password, function(err, user){
+            if (user) {
+                console.log('Login: '+username+', from: '+req.connection.remoteAddress);
+                req.session.user = username;
+                req.session.cookie.maxAge = 1800000 //30m
+                res.redirect('/home');
+            } else {
+                console.log('redirect /login | '+req.connection.remoteAddress);
+                console.log('invalid login: '+username);
+                res.redirect('/login');
+            }
+        });        
 });
-app.get('/home', function(req, res){
+
+app.get('/home', restrict, function(req, res){
         console.log('GET /home | '+req.connection.remoteAddress);
 	    res.render('home', { title:'KEES Home'} );
 });
-app.get('/admin', function(req, res){
+app.get('/admin', restrict, function(req, res){
         console.log('GET /admin | '+req.connection.remoteAddress);
         res.render('admin', { title:'KEES Admin'} ); 
 });
-app.get('/logout', function(req, res){
+app.get('/logout', restrict, function(req, res){
 	    console.log('GET /logout | '+req.session.user+' '+req.connection.remoteAddress);
-	    req.session.user = null;
-        res.redirect('/');
+	    // req.session.user = null;
+     //    res.redirect('/');
+
+        req.session.destroy(function(){
+            res.redirect('/login');
+        });
 });
-app.get('/unlock', function(req, res){
+app.get('/unlock', restrict, function(req, res){
         console.log('GET /unlock | '+req.connection.remoteAddress);
         child = exec('python /home/pi/command.py 2');
         res.redirect('/home');
 });
-app.get('/master', function(req, res){
+app.get('/master', restrict, function(req, res){
         console.log('GET /master | '+req.connection.remoteAddress);
         child = exec('python /home/pi/command.py 4');
         res.redirect('/admin');
 });
-app.get('/addguest', function(req, res){
+app.get('/addguest', restrict, function(req, res){
         console.log('GET /addguest | '+req.connection.remoteAddress);
         var name = req.param('name');
         child = exec('/home/pi/RaspicamC++/raspicam-0.0.6/JoshProjects/AddGuest/build/addGuest '+name);
@@ -100,7 +149,7 @@ app.get('/addguest', function(req, res){
 });
 
 //remove guest from guests.txt file
-app.get('/removeguest', function(req, res){
+app.get('/removeguest', restrict, function(req, res){
         console.log('GET /removeguest | '+req.connection.remoteAddress);
 
         var name = req.param('name');
@@ -130,7 +179,7 @@ app.get('/removeguest', function(req, res){
 });
 
 //send list of history to client
-app.get('/history', function(req, res){
+app.get('/history', restrict, function(req, res){
     var fs = require('fs');
 
     fs.readFile('/home/pi/data/hist_master.txt', function(err, data) {
@@ -161,7 +210,7 @@ app.get('/history', function(req, res){
 });
 
 //send list of guests to client
-app.get('/guests', function(req, res){
+app.get('/guests', restrict, function(req, res){
     console.log('GET /guests | '+req.connection.remoteAddress);
 
     var fs = require('fs');
