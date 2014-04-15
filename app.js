@@ -83,7 +83,8 @@ app.post('/login', function(req, res){
         authenticate(username, password, function(err, user){
             if (user) {
                 req.session.user = username;
-                req.session.cookie.maxAge = 1800000 //30m
+                //req.session.cookie.maxAge = 1800000 //30m
+                req.session.cookie.maxAge = 7200000 //2h
                 res.redirect('/home');
                 console.log('redirect /home | '+req.session.user+' | '+req.connection.remoteAddress);
                 console.log('valid login');
@@ -107,9 +108,6 @@ app.get('/admin', restrict, function(req, res){
 
 app.get('/logout', restrict, function(req, res){
 	    console.log('GET /logout | '+req.session.user+' '+req.connection.remoteAddress);
-	    // req.session.user = null;
-        // res.redirect('/');
-
         req.session.destroy(function(){
             res.redirect('/login');
         });
