@@ -131,10 +131,6 @@ app.get('/addguest', restrict, function(req, res){
         console.log('GET /addguest | '+req.connection.remoteAddress);
         var name = req.param('name');
         child = exec('/home/pi/RaspicamC++/raspicam-0.0.6/JoshProjects/AddGuest/build/addGuest '+name);
-
-        fs.appendFile('/home/pi/data/guests.txt', name+'\n', function(err) {
-            if(err) throw err;
-        });
         res.redirect('/home');
 });
 
@@ -145,26 +141,10 @@ app.get('/removeguest', restrict, function(req, res){
         var name = req.param('name');
 
         fs.readFile('/home/pi/data/guests.txt', function(err, data){
-            if(err) throw err;
-            var ls = data.toString().split("\n");
-            var cn = [];
-
-            var wstream = fs.createWriteStream('/home/pi/data/guests.txt');
-
-            for (i=0; i<ls.length-1; i++)
-                cn[i] = ls[i];
-
-            for (i in cn) {
-                if (cn[i] == name)
-                    wstream.write(' \n');
-                else
-                    wstream.write(cn[i]+'\n');
+            if(!err) {
+                var ls = data.toString().replace(name, ' ');
+                fs.writeFile('/home/pi/data/guests.txt', ls);
             }
-
-            wstream.end();
-
-            res.write(JSON.stringify(cn));
-            res.end();
         });
 });
 
@@ -173,28 +153,29 @@ app.get('/history', restrict, function(req, res){
         console.log('GET /history | '+req.connection.remoteAddress);
 
         fs.readFile('/home/pi/data/hist_master.txt', function(err, data) {
-            if(err) throw err;
+            if(!err) {
 
-            var ls = data.toString().split("\n");
-            var cn = [];
+                var ls = data.toString().split("\n");
+                var cn = [];
 
-            if(ls.length > 25) {
-                for(i=0; i<25; i++) 
-                    cn[i] = ls[i];
+                if(ls.length > 25) {
+                    for(i=0; i<25; i++) 
+                        cn[i] = ls[i];
+                }
+                else {
+                    for(i in ls)
+                        cn[i] = ls[i];
+                }
+
+                // ** DEBUG
+                //
+                // for(i in cn) {
+                //     console.log(cn[i]);
+                // }
+
+                res.write(JSON.stringify(cn));
+                res.end();
             }
-            else {
-                for(i in ls)
-                    cn[i] = ls[i];
-            }
-
-            // ** DEBUG
-            //
-            // for(i in cn) {
-            //     console.log(cn[i]);
-            // }
-
-            res.write(JSON.stringify(cn));
-            res.end();
         });
 });
 
@@ -203,15 +184,16 @@ app.get('/guests', restrict, function(req, res){
         console.log('GET /guests | '+req.connection.remoteAddress);
 
         fs.readFile('/home/pi/data/guests.txt', function(err, data) {
-            if(err) throw err;
-            var ls = data.toString().split('\n');
-            var cn = [];
+            if(!err) {
+                var ls = data.toString().split('\n');
+                var cn = [];
 
-            for(i=0; i<ls.length-1; i++)
-                cn[i] = ls[i];
+                for(i=0; i<ls.length-1; i++)
+                    cn[i] = ls[i];
 
-            res.write(JSON.stringify(cn));
-            res.end();
+                res.write(JSON.stringify(cn));
+                res.end();
+            }
         });
 });
 
@@ -220,5 +202,5 @@ app.all('*', function(req, res){
 });
 
 http.createServer(app).listen(app.get('port'), function(){
-		console.log('Express server listening on port ' + app.get('port'));
+        console.log('Express server listening on port ' + app.get('port'));
 });
